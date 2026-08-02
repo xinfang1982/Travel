@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lake Garda Family Trip · 8–15 August 2026</title>
+  <meta name="description" content="A relaxed family itinerary from Plankstadt to Lake Garda, staying at Parc Hotel Peschiera del Garda.">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link id="leaflet-css" rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" onerror="this.href='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css'">
+  <style>
+    :root {
+      --ink: #17342d;
+      --muted: #63716d;
+      --cream: #f7f4ec;
+      --paper: #fffdf8;
+      --lake: #1f7a78;
+      --lake-dark: #125b5b;
+      --sun: #f2b84b;
+      --coral: #e56f50;
+      --line: #dfded5;
+      --shadow: 0 16px 42px rgba(25, 63, 55, .12);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--cream);
+      font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .hero {
+      min-height: 440px;
+      display: grid;
+      align-items: end;
+      position: relative;
+      overflow: hidden;
+      padding: 64px max(22px, calc((100vw - 1120px) / 2)) 58px;
+      color: white;
+      background:
+        radial-gradient(circle at 82% 15%, rgba(255, 207, 98, .95) 0 7%, transparent 7.2%),
+        linear-gradient(145deg, rgba(14, 80, 79, .98), rgba(35, 137, 133, .87));
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      left: -10%; right: -10%; bottom: -110px;
+      height: 235px;
+      border-radius: 50% 50% 0 0;
+      background: rgba(255,255,255,.09);
+      transform: rotate(-2deg);
+    }
+    .hero-inner { position: relative; z-index: 1; max-width: 760px; }
+    .eyebrow {
+      margin: 0 0 14px;
+      font-weight: 750;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: .78rem;
+      color: #ffe3a0;
+    }
+    h1 { margin: 0; max-width: 680px; font: 800 clamp(2.6rem, 7vw, 5.4rem)/.94 Georgia, serif; letter-spacing: -.045em; }
+    .subtitle { margin: 24px 0 0; max-width: 650px; font-size: clamp(1rem, 2vw, 1.2rem); color: rgba(255,255,255,.86); }
+    .quick-facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+    .chip { padding: 8px 13px; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; background: rgba(255,255,255,.1); font-size: .9rem; }
+    main { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 58px 0 80px; }
+    h2 { margin: 0 0 8px; font: 750 clamp(1.8rem, 4vw, 2.7rem)/1.1 Georgia, serif; letter-spacing: -.025em; }
+    .section-intro { margin: 0 0 24px; color: var(--muted); }
+    .map-wrap { overflow: hidden; background: var(--paper); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); }
+    #map { height: min(65vh, 600px); min-height: 440px; background: #cfe3dc; }
+    .map-footer { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 14px 18px; color: var(--muted); font-size: .86rem; }
+    .map-key { display: flex; flex-wrap: wrap; gap: 14px; }
+    .connection { display: inline-flex; align-items: center; gap: 7px; font-weight: 700; }
+    .connection::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #d79521; }
+    .connection.online::before { background: #2d9c6a; }
+    .connection.offline::before { background: var(--coral); }
+    .dot { display: inline-block; width: 10px; height: 10px; margin-right: 5px; border-radius: 50%; }
+    .dot.hotel { background: var(--coral); } .dot.trip { background: var(--lake); } .dot.home { background: var(--sun); }
+    .days { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 54px; }
+    .day {
+      position: relative;
+      padding: 25px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .day:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(25,63,55,.09); }
+    .date { color: var(--coral); text-transform: uppercase; letter-spacing: .09em; font-size: .76rem; font-weight: 800; }
+    .day h3 { margin: 5px 0 8px; font: 750 1.35rem/1.25 Georgia, serif; }
+    .day p { margin: 0; color: #52635e; }
+    .meal { display: inline-block; margin-top: 15px; color: var(--lake-dark); font-weight: 700; font-size: .86rem; }
+    .links { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 17px; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 40px; padding: 8px 13px;
+      border-radius: 10px; text-decoration: none; font-weight: 750; font-size: .86rem;
+      color: white; background: var(--lake);
+    }
+    .button.secondary { color: var(--lake-dark); background: #e3efeb; }
+    .tips { margin-top: 54px; padding: 30px; border-radius: 20px; background: #173f39; color: white; }
+    .tips h2 { color: #ffe1a2; }
+    .tips ul { margin: 18px 0 0; padding-left: 20px; columns: 2; column-gap: 45px; }
+    .tips li { break-inside: avoid; margin-bottom: 10px; color: rgba(255,255,255,.84); }
+    footer { padding: 20px 16px 38px; text-align: center; color: var(--muted); font-size: .85rem; }
+    .numbered-marker {
+      display: grid; place-items: center; width: 30px; height: 30px;
+      border-radius: 50% 50% 50% 8px; transform: rotate(-45deg);
+      color: white; background: var(--lake); border: 2px solid white;
+      box-shadow: 0 3px 9px rgba(0,0,0,.28); font-size: 12px; font-weight: 900;
+    }
+    .numbered-marker span { transform: rotate(45deg); }
+    .numbered-marker.hotel { background: var(--coral); }
+    .numbered-marker.home { background: #d79521; }
+    .leaflet-popup-content { margin: 13px 16px; line-height: 1.45; }
+    .leaflet-popup-content strong { color: var(--ink); }
+
+    /* Compact, one-screen desktop layout */
+    @media (min-width: 721px) {
+      body { height: 100dvh; overflow: hidden; }
+      .hero {
+        min-height: 0;
+        height: 132px;
+        align-items: center;
+        padding: 20px 28px;
+      }
+      .hero::after { display: none; }
+      .hero-inner {
+        width: min(1440px, 100%);
+        max-width: none;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(300px, 1fr) auto;
+        column-gap: 26px;
+        align-items: center;
+      }
+      .eyebrow { margin: 0 0 5px; font-size: .68rem; }
+      h1 { max-width: none; font-size: clamp(2rem, 3.5vw, 3.25rem); line-height: .98; }
+      .subtitle { display: none; }
+      .quick-facts { margin: 0; max-width: 650px; justify-content: flex-end; }
+      .chip { padding: 6px 10px; font-size: .76rem; }
+      main {
+        width: 100%;
+        height: calc(100dvh - 132px);
+        margin: 0;
+        padding: 14px;
+        display: grid;
+        grid-template-columns: minmax(420px, 46%) minmax(420px, 54%);
+        gap: 14px;
+      }
+      main > section:first-child {
+        min-width: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      main > section:first-child > h2 { font-size: 1.25rem; margin: 0 0 2px 4px; }
+      main > section:first-child > .section-intro { margin: 0 0 9px 4px; font-size: .78rem; }
+      .map-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; border-radius: 15px; }
+      #map { flex: 1; height: auto; min-height: 0; }
+      .map-footer { flex: 0 0 auto; padding: 8px 12px; font-size: .72rem; }
+      .itinerary-panel {
+        min-width: 0;
+        height: 100%;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+        scrollbar-color: var(--lake) transparent;
+        padding: 2px 8px 18px 2px;
+      }
+      .itinerary-panel::-webkit-scrollbar { width: 8px; }
+      .itinerary-panel::-webkit-scrollbar-thumb { background: var(--lake); border-radius: 20px; }
+      .panel-heading {
+        position: sticky;
+        top: -2px;
+        z-index: 5;
+        padding: 2px 8px 10px;
+        background: linear-gradient(var(--cream) 78%, transparent);
+      }
+      .panel-heading h2 { font-size: 1.5rem; margin: 0; }
+      .panel-heading p { margin: 2px 0 0; color: var(--muted); font-size: .78rem; }
+      .days { grid-template-columns: 1fr; gap: 8px; margin-top: 0; }
+      .day { padding: 14px 16px; border-radius: 13px; }
+      .day:hover { transform: none; }
+      .date { font-size: .66rem; }
+      .day h3 { margin: 2px 0 4px; font-size: 1.05rem; }
+      .day p { font-size: .83rem; line-height: 1.42; }
+      .meal { margin-top: 7px; font-size: .73rem; }
+      .links { float: right; margin: 5px 0 0 10px; gap: 6px; }
+      .button { min-height: 31px; padding: 5px 9px; border-radius: 8px; font-size: .72rem; }
+      .tips { margin-top: 9px; padding: 18px; border-radius: 13px; }
+      .tips h2 { font-size: 1.25rem; }
+      .tips ul { margin-top: 9px; font-size: .8rem; line-height: 1.4; }
+      footer { display: none; }
+    }
+    @media (max-width: 720px) {
+      .hero { min-height: 390px; padding-bottom: 44px; }
+      .days { grid-template-columns: 1fr; }
+      #map { height: 520px; min-height: 0; }
+      .map-footer { align-items: flex-start; flex-direction: column; }
+      .tips ul { columns: 1; }
+      .panel-heading { margin-top: 45px; }
+      .panel-heading p { color: var(--muted); }
+    }
+    @media print {
+      .hero { min-height: auto; padding: 35px; background: var(--lake); }
+      main { width: 100%; padding: 25px; }
+      #map { height: 360px; }
+      .days { gap: 10px; margin-top: 25px; }
+      .day { break-inside: avoid; padding: 16px; }
+      .button { display: none; }
+      .tips { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">The family summer escape</p>
+      <h1>One easy week at Lake Garda</h1>
+      <p class="subtitle">A relaxed road trip from Plankstadt to Peschiera del Garda—with boats, castles, roller coasters, pool time and plenty of gelato.</p>
+      <div class="quick-facts">
+        <span class="chip">8–15 August 2026</span>
+        <span class="chip">2 adults + 10-year-old</span>
+        <span class="chip">Parc Hotel</span>
+        <span class="chip">Breakfast + dinner included</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section aria-labelledby="map-heading">
+      <h2 id="map-heading">Your places on the map</h2>
+      <p class="section-intro">Tap a marker to see which day it belongs to. Zoom out to see Plankstadt and the journey south.</p>
+      <div class="map-wrap">
+        <div id="map" role="application" aria-label="Interactive map of the Lake Garda family itinerary"></div>
+        <div class="map-footer">
+          <div class="map-key">
+            <span><i class="dot home"></i>Home</span>
+            <span><i class="dot hotel"></i>Hotel</span>
+            <span><i class="dot trip"></i>Day trips</span>
+          </div>
+          <span id="connection-status" class="connection" role="status" aria-live="polite">Checking internet…</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="itinerary-panel">
+      <div class="panel-heading">
+        <h2>Your relaxed week</h2>
+        <p>Scroll for each day, meal reminders and useful routes.</p>
+      </div>
+    <section class="days" aria-label="Day-by-day itinerary">
+      <article class="day">
+        <span class="date">Saturday · 8 August</span>
+        <h3>Arrive and take it easy</h3>
+        <p>Leave Plankstadt early, take a couple of proper breaks and settle into Parc Hotel. Pool, hotel dinner, then maybe a gentle gelato walk in Peschiera.</p>
+        <span class="meal">🍽 Dinner at the hotel</span>
+        <div class="links"><a class="button" href="https://www.google.com/maps/dir/?api=1&origin=68723+Plankstadt,+Germany&destination=Parc+Hotel,+Via+Paradiso+di+Sopra,+Peschiera+del+Garda,+Italy&travelmode=driving" target="_blank" rel="noopener">Driving route</a></div>
+      </article>
+
+      <article class="day">
+        <span class="date">Sunday · 9 August</span>
+        <h3>Pool + Peschiera</h3>
+        <p>Sleep in, enjoy the pool and take the free hotel shuttle into Peschiera. Wander around the fortress, canals and waterfront, then come back for dinner.</p>
+        <span class="meal">🥪 Lunch in town · 🍽 Dinner at the hotel</span>
+        <div class="links"><a class="button secondary" href="https://www.google.com/maps/search/?api=1&query=Peschiera+del+Garda+historic+centre" target="_blank" rel="noopener">Open Peschiera</a></div>
+      </article>
+
+      <article class="day">
+        <span class="date">Monday · 10 August</span>
+        <h3>Gardaland day</h3>
+        <p>Go early and let your son pick the first big ride. Head back around 17:30 for hotel dinner—or stay late for the evening atmosphere and ask reception about a packed meal.</p>
+        <span class="meal">🎢 Flexible dinner day</span>
+        <div class="links">
+          <a class="button" href="https://www.google.com/maps/dir/?api=1&origin=Parc+Hotel,+Peschiera+del+Garda&destination=Gardaland,+Castelnuovo+del+Garda&travelmode=driving" target="_blank" rel="noopener">Route</a>
+          <a class="button secondary" href="https://www.gardaland.it/en/useful-information/plan-your-visit/opening-times/" target="_blank" rel="noopener">Opening times</a>
+        </div>
+      </article>
+
+      <article class="day">
+        <span class="date">Tuesday · 11 August</span>
+        <h3>Boat to Sirmione</h3>
+        <p>Catch a morning boat from Peschiera, see the castle and little lanes, and perhaps take a short boat ride around the peninsula. Choose a return sailing that gets you back comfortably before dinner.</p>
+        <span class="meal">🍕 Lunch in Sirmione · 🍽 Dinner at the hotel</span>
+        <div class="links">
+          <a class="button" href="https://www.google.com/maps/search/?api=1&query=Scaligero+Castle+Sirmione" target="_blank" rel="noopener">Open Sirmione</a>
+          <a class="button secondary" href="https://www.navigazionelaghi.it/en/tickets-and-timetables-lake-garda/" target="_blank" rel="noopener">Boat times</a>
+        </div>
+      </article>
+
+      <article class="day">
+        <span class="date">Wednesday · 12 August</span>
+        <h3>A little Verona</h3>
+        <p>Take the train from Peschiera. See the Arena, Piazza delle Erbe, Juliet’s courtyard and Ponte Pietra. Head home mid-afternoon for a swim before dinner.</p>
+        <span class="meal">🍝 Lunch in Verona · 🍽 Dinner at the hotel</span>
+        <div class="links"><a class="button" href="https://www.google.com/maps/dir/?api=1&origin=Peschiera+del+Garda+Station&destination=Verona+Porta+Nuova&travelmode=transit" target="_blank" rel="noopener">Train route</a></div>
+      </article>
+
+      <article class="day">
+        <span class="date">Thursday · 13 August</span>
+        <h3>Sigurtà + Borghetto</h3>
+        <p>Explore the gardens in the morning—bikes or a golf cart keep it fun. Then have lunch beside the river and old watermills in tiny Borghetto sul Mincio.</p>
+        <span class="meal">🥗 Lunch in Borghetto · 🍽 Dinner at the hotel</span>
+        <div class="links"><a class="button" href="https://www.google.com/maps/dir/?api=1&origin=Parc+Hotel,+Peschiera+del+Garda&destination=Parco+Giardino+Sigurta&waypoints=Borghetto+sul+Mincio&travelmode=driving" target="_blank" rel="noopener">Open route</a></div>
+      </article>
+
+      <article class="day">
+        <span class="date">Friday · 14 August</span>
+        <h3>Easygoing Lazise</h3>
+        <p>Take a boat or drive to Lazise. Stroll around the harbour, swim, eat by the lake and return for your last hotel dinner. Finish the holiday with one more gelato.</p>
+        <span class="meal">🍕 Lunch by the lake · 🍽 Dinner at the hotel</span>
+        <div class="links"><a class="button" href="https://www.google.com/maps/dir/?api=1&origin=Parc+Hotel,+Peschiera+del+Garda&destination=Lazise,+Italy&travelmode=driving" target="_blank" rel="noopener">Open route</a></div>
+      </article>
+
+      <article class="day">
+        <span class="date">Saturday · 15 August</span>
+        <h3>Back to Plankstadt</h3>
+        <p>It’s Ferragosto, so the roads will be busy. Ideally leave around 05:00–06:00 and ask the hotel for a packed breakfast. Check live traffic before choosing your route.</p>
+        <span class="meal">☕ Ask for an early breakfast box</span>
+        <div class="links"><a class="button" href="https://www.google.com/maps/dir/?api=1&origin=Parc+Hotel,+Peschiera+del+Garda&destination=68723+Plankstadt,+Germany&travelmode=driving" target="_blank" rel="noopener">Route home</a></div>
+      </article>
+    </section>
+
+    <aside class="tips">
+      <h2>Keep the week easy</h2>
+      <ul>
+        <li>Breakfast is normally 07:30–10:00 and dinner 18:30–20:30—double-check at reception.</li>
+        <li>Ask for the latest free shuttle timetable when you check in.</li>
+        <li>Book Gardaland and Sigurtà tickets ahead.</li>
+        <li>Arrive at the ferry ticket office at least 20–30 minutes early.</li>
+        <li>Pack hats, sunscreen, refillable bottles and water shoes.</li>
+        <li>Keep outdoor walks for mornings and pool time for hot afternoons.</li>
+      </ul>
+    </aside>
+    </div>
+  </main>
+
+  <footer>Made for your family trip · Plans and opening times can change, so check them again shortly before each outing.</footer>
+
+  <script>
+    const places = [
+      { n: 'H', type: 'home',  name: 'Home · Plankstadt', detail: 'Start and finish', lat: 49.395, lng: 8.596 },
+      { n: '★', type: 'hotel', name: 'Parc Hotel', detail: 'Your base for the week', lat: 45.421, lng: 10.684 },
+      { n: '1', type: 'trip',  name: 'Peschiera del Garda', detail: 'Sunday · old town and waterfront', lat: 45.439, lng: 10.692 },
+      { n: '2', type: 'trip',  name: 'Gardaland', detail: 'Monday · theme park day', lat: 45.455, lng: 10.714 },
+      { n: '3', type: 'trip',  name: 'Sirmione', detail: 'Tuesday · castle and boat trip', lat: 45.493, lng: 10.607 },
+      { n: '4', type: 'trip',  name: 'Verona', detail: 'Wednesday · city day', lat: 45.439, lng: 10.992 },
+      { n: '5', type: 'trip',  name: 'Parco Giardino Sigurtà', detail: 'Thursday morning', lat: 45.357, lng: 10.735 },
+      { n: '5', type: 'trip',  name: 'Borghetto sul Mincio', detail: 'Thursday lunch', lat: 45.354, lng: 10.726 },
+      { n: '6', type: 'trip',  name: 'Lazise', detail: 'Friday · harbour and swimming', lat: 45.505, lng: 10.733 }
+    ];
+
+    let mapStarted = false;
+    let loadingMap = false;
+    const status = document.getElementById('connection-status');
+
+    function setStatus(message, state) {
+      status.textContent = message;
+      status.className = `connection ${state || ''}`;
+    }
+
+    function initMap() {
+      if (mapStarted || !window.L) return;
+      mapStarted = true;
+      const map = L.map('map', { scrollWheelZoom: false }).setView([45.44, 10.70], 10);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(map);
+
+      places.forEach(place => {
+        const icon = L.divIcon({
+          className: '',
+          html: `<div class="numbered-marker ${place.type}"><span>${place.n}</span></div>`,
+          iconSize: [30, 30], iconAnchor: [15, 29], popupAnchor: [0, -28]
+        });
+        L.marker([place.lat, place.lng], { icon })
+          .addTo(map)
+          .bindPopup(`<strong>${place.name}</strong><br>${place.detail}`);
+      });
+
+      const localTrip = places.slice(1).map(p => [p.lat, p.lng]);
+      L.polyline(localTrip, { color: '#1f7a78', weight: 3, opacity: .45, dashArray: '7 8' }).addTo(map);
+      map.fitBounds(L.latLngBounds(localTrip).pad(.13));
+      L.control.scale({ imperial: false }).addTo(map);
+      setStatus('Online map loaded', 'online');
+    }
+
+    function loadScript(url) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = url;
+        script.crossOrigin = '';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    async function connectMap() {
+      if (mapStarted || loadingMap) return;
+      if (!navigator.onLine) {
+        setStatus('Offline — map will load when connected', 'offline');
+        return;
+      }
+      loadingMap = true;
+      setStatus('Connecting to online map…', '');
+      try {
+        if (!window.L) {
+          try {
+            await loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
+          } catch (_) {
+            await loadScript('https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js');
+          }
+        }
+        initMap();
+      } catch (_) {
+        setStatus('Map connection failed — reconnect and retry', 'offline');
+      } finally {
+        loadingMap = false;
+      }
+    }
+
+    window.addEventListener('online', connectMap);
+    window.addEventListener('offline', () => {
+      if (!mapStarted) setStatus('Offline — map will load when connected', 'offline');
+    });
+    connectMap();
+  </script>
+</body>
+</html>
