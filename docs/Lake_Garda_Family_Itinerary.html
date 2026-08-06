@@ -88,6 +88,14 @@
     .date { color: var(--coral); text-transform: uppercase; letter-spacing: .09em; font-size: .76rem; font-weight: 800; }
     .day h3 { margin: 5px 0 8px; font: 750 1.35rem/1.25 Georgia, serif; }
     .day p { margin: 0; color: #52635e; }
+    .weather {
+      display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center;
+      margin-top: 14px; padding: 10px 12px; border-radius: 12px;
+      background: #edf5f2; border: 1px solid #d2e5df; color: var(--lake-dark);
+    }
+    .weather-icon { grid-row: 1 / span 2; font-size: 1.55rem; line-height: 1; }
+    .weather strong { font-size: .86rem; }
+    .weather small { color: #52635e; line-height: 1.35; }
     .meal { display: inline-block; margin-top: 15px; color: var(--lake-dark); font-weight: 700; font-size: .86rem; }
     .links { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 17px; }
     .button {
@@ -184,6 +192,10 @@
       .date { font-size: .66rem; }
       .day h3 { margin: 2px 0 4px; font-size: 1.05rem; }
       .day p { font-size: .83rem; line-height: 1.42; }
+      .weather { margin-top: 7px; padding: 7px 9px; gap: 1px 8px; }
+      .weather-icon { font-size: 1.25rem; }
+      .weather strong { font-size: .75rem; }
+      .weather small { font-size: .7rem; }
       .meal { margin-top: 7px; font-size: .73rem; }
       .links { float: right; margin: 5px 0 0 10px; gap: 6px; }
       .button { min-height: 31px; padding: 5px 9px; border-radius: 8px; font-size: .72rem; }
@@ -247,13 +259,14 @@
     <div class="itinerary-panel">
       <div class="panel-heading">
         <h2>Your relaxed week</h2>
-        <p>Scroll for each day, meal reminders and useful routes.</p>
+        <p>Forecast: Peschiera/Verona area · CustomWeather via <a href="https://www.timeanddate.com/weather/@3171152/ext" target="_blank" rel="noopener">timeanddate.com</a> · updated 6 Aug 2026, 05:24 CEST.</p>
       </div>
     <section class="days" aria-label="Day-by-day itinerary">
       <article class="day">
         <span class="date">Saturday · 8 August</span>
         <h3>Arrive and take it easy</h3>
         <p>Leave Plankstadt early, take a couple of proper breaks and settle into Parc Hotel. Pool, hotel dinner, then maybe a gentle gelato walk in Peschiera.</p>
+        <div class="weather"><span class="weather-icon" role="img" aria-label="Morning showers, then sunshine">🌦️</span><strong>Morning showers, then sunny · 34° / 23°C · rain 50%</strong><small>Keep rain jackets handy for arrival; the afternoon will be hot, so hydrate during the drive.</small></div>
         <span class="meal">🍽 Dinner at the hotel</span>
         <div class="links"><a class="button" href="https://www.google.com/maps/dir/?api=1&origin=68723+Plankstadt,+Germany&destination=Parc+Hotel,+Via+Paradiso+di+Sopra,+Peschiera+del+Garda,+Italy&travelmode=driving" target="_blank" rel="noopener">Driving route</a></div>
       </article>
@@ -262,6 +275,7 @@
         <span class="date">Sunday · 9 August</span>
         <h3>Pool + Peschiera</h3>
         <p>Sleep in, enjoy the pool and take the free hotel shuttle into Peschiera. Wander around the fortress, canals and waterfront, then come back for dinner.</p>
+        <div class="weather"><span class="weather-icon" role="img" aria-label="Sunny with a small late thunderstorm risk">☀️</span><strong>Sunny; isolated late storm possible · 36° / 24°C · rain 9%</strong><small>Do the old-town walk early, use shade at midday and watch the sky before an evening swim.</small></div>
         <span class="meal">🥪 Lunch in town · 🍽 Dinner at the hotel</span>
         <div class="links"><a class="button secondary" href="https://www.google.com/maps/search/?api=1&query=Peschiera+del+Garda+historic+centre" target="_blank" rel="noopener">Open Peschiera</a></div>
       </article>
@@ -270,6 +284,7 @@
         <span class="date">Monday · 10 August</span>
         <h3>Gardaland day</h3>
         <p>Go early and let your son pick the first big ride. Head back around 17:30 for hotel dinner—or stay late for the evening atmosphere and ask reception about a packed meal.</p>
+        <div class="weather"><span class="weather-icon" role="img" aria-label="Sunny and very hot">☀️</span><strong>Sunny and very hot · 38° / 25°C · rain 19%</strong><small>Prioritise outdoor rides early, take frequent indoor or shaded breaks and refill water often.</small></div>
         <span class="meal">🎢 Flexible dinner day</span>
         <div class="links">
           <a class="button" href="https://www.google.com/maps/dir/?api=1&origin=Parc+Hotel,+Peschiera+del+Garda&destination=Gardaland,+Castelnuovo+del+Garda&travelmode=driving" target="_blank" rel="noopener">Route</a>
@@ -281,6 +296,7 @@
         <span class="date">Tuesday · 11 August</span>
         <h3>Boat to Sirmione</h3>
         <p>Catch a morning boat from Peschiera, see the castle and little lanes, and perhaps take a short boat ride around the peninsula. Choose a return sailing that gets you back comfortably before dinner.</p>
+        <div class="weather"><span class="weather-icon" role="img" aria-label="Early showers, then mostly sunny">🌦️</span><strong>Early showers, then mostly sunny · 38° / 23°C · rain 24%</strong><small>Check the live ferry status after any morning rain; carry water and avoid the most exposed walks at peak heat.</small></div>
         <span class="meal">🍕 Lunch in Sirmione · 🍽 Dinner at the hotel</span>
         <div class="links">
           <a class="button" href="https://www.google.com/maps/search/?api=1&query=Scaligero+Castle+Sirmione" target="_blank" rel="noopener">Open Sirmione</a>
@@ -292,6 +308,7 @@
         <span class="date">Wednesday · 12 August</span>
         <h3>A little Verona</h3>
         <p>Take the train from Peschiera. See the Arena, Piazza delle Erbe, Juliet’s courtyard and Ponte Pietra. Head home mid-afternoon for a swim before dinner.</p>
+        <div class="weather"><span class="weather-icon" role="img" aria-label="Early thunderstorms, then sunny intervals">⛈️</span><strong>Early thunderstorms, then brighter · 37° / 23°C · rain 18%</strong><small>Check conditions before leaving and use museums or cafés as the wet-weather fallback; Verona will still be very hot later.</small></div>
         <span class="meal">🍝 Lunch in Verona · 🍽 Dinner at the hotel</span>
         <div class="links"><a class="button" href="https://www.google.com/maps/dir/?api=1&origin=Peschiera+del+Garda+Station&destination=Verona+Porta+Nuova&travelmode=transit" target="_blank" rel="noopener">Train route</a></div>
       </article>
@@ -300,6 +317,7 @@
         <span class="date">Thursday · 13 August</span>
         <h3>Sigurtà + Borghetto</h3>
         <p>Explore the gardens in the morning—bikes or a golf cart keep it fun. Then have lunch beside the river and old watermills in tiny Borghetto sul Mincio.</p>
+        <div class="weather"><span class="weather-icon" role="img" aria-label="Sunny and hot">☀️</span><strong>Sunny and hot · 36° / 23°C · rain 18%</strong><small>Start at opening time, choose the golf cart if the heat bites and save shaded Borghetto for lunch.</small></div>
         <span class="meal">🥗 Lunch in Borghetto · 🍽 Dinner at the hotel</span>
         <div class="links"><a class="button" href="https://www.google.com/maps/dir/?api=1&origin=Parc+Hotel,+Peschiera+del+Garda&destination=Parco+Giardino+Sigurta&waypoints=Borghetto+sul+Mincio&travelmode=driving" target="_blank" rel="noopener">Open route</a></div>
       </article>
@@ -308,6 +326,7 @@
         <span class="date">Friday · 14 August</span>
         <h3>Easygoing Lazise</h3>
         <p>Take a boat or drive to Lazise. Stroll around the harbour, swim, eat by the lake and return for your last hotel dinner. Finish the holiday with one more gelato.</p>
+        <div class="weather"><span class="weather-icon" role="img" aria-label="Sunny and hot">☀️</span><strong>Sunny and hot · 37° / 25°C · rain 6%</strong><small>Plan the harbour stroll before lunch, use strong sun protection and keep the afternoon focused on swimming and shade.</small></div>
         <span class="meal">🍕 Lunch by the lake · 🍽 Dinner at the hotel</span>
         <div class="links"><a class="button" href="https://www.google.com/maps/dir/?api=1&origin=Parc+Hotel,+Peschiera+del+Garda&destination=Lazise,+Italy&travelmode=driving" target="_blank" rel="noopener">Open route</a></div>
       </article>
@@ -316,6 +335,7 @@
         <span class="date">Saturday · 15 August</span>
         <h3>Back to Plankstadt</h3>
         <p>It’s Ferragosto, so the roads will be busy. Ideally leave around 05:00–06:00 and ask the hotel for a packed breakfast. Check live traffic before choosing your route.</p>
+        <div class="weather"><span class="weather-icon" role="img" aria-label="Thundershowers and broken cloud">⛈️</span><strong>Thundershowers possible · 38° / 26°C · rain 55%</strong><small>Check radar before departure and allow extra braking distance if storms affect the first part of the drive.</small></div>
         <span class="meal">☕ Ask for an early breakfast box</span>
         <div class="links"><a class="button" href="https://www.google.com/maps/dir/?api=1&origin=Parc+Hotel,+Peschiera+del+Garda&destination=68723+Plankstadt,+Germany&travelmode=driving" target="_blank" rel="noopener">Route home</a></div>
       </article>
